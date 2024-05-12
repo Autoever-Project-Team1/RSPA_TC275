@@ -31,7 +31,7 @@ void PID_Pos_Controller_Init(void)
     //
     pos_pid.Kp = 1;
     pos_pid.Ki = 0.0;
-    pos_pid.Kd = 0.0;
+    pos_pid.Kd = 0.5;
     pos_pid.error_p_d = 0;
     //
     pos_pid2.Kp = 0.3;
@@ -61,7 +61,7 @@ void PID_Pos_Con(double Target,double Input)
 
     if (pos_pid.error_p_int > 10) pos_pid.error_p_int = 10;
 
-    pos_pid.Win = pos_pid.Kp * pos_pid.error_p + pos_pid.Ki * pos_pid.error_p_int;
+    pos_pid.Win = pos_pid.Kp * pos_pid.error_p + pos_pid.Ki * pos_pid.error_p_int + pos_pid.Kd *pos_pid.error_p_d;
 
     if (pos_pid.Win > 12) {
         pos_pid.Win = 12;
@@ -90,10 +90,10 @@ void PID_Vel_Con(double Target,double Input)
                   vel_pid.Vin =-11;
               }
 
-              if(vel_pid.Vin>=0)IfxPort_setPinLow(DIR_PIN);
+              if(vel_pid.Vin>=0)IfxPort_setPinHigh(DIR_PIN);
               else if(vel_pid.Vin<0)
                   {
-                      IfxPort_setPinHigh(DIR_PIN);
+                      IfxPort_setPinLow(DIR_PIN);
                       vel_pid.Vin =vel_pid.Vin*-1;
                   }
 
@@ -133,6 +133,7 @@ void PID_Vel_Con2(double Target, double Input) {
     } else if (vel_pid2.Vin < -11) {
         vel_pid2.Vin = -11;
     }
+
 
     if (vel_pid2.Vin >= 0) IfxPort_setPinLow(DIR_PIN2);
     else if (vel_pid2.Vin < 0) {

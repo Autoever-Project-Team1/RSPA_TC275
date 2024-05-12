@@ -29,9 +29,10 @@ App_LPF_Encoder g_LPF_Encoder2;
 /*********************************************************************************************************************/
 void Encoder_Init(void)
 {
+    //LEFT
     IfxPort_setPinModeInput(A, IfxPort_InputMode_pullUp);
     IfxPort_setPinModeInput(B, IfxPort_InputMode_pullUp);
-
+    //RIGHT
     IfxPort_setPinModeInput(A2, IfxPort_InputMode_pullUp);
     IfxPort_setPinModeInput(B2, IfxPort_InputMode_pullUp);
 

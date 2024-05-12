@@ -67,6 +67,8 @@ TestCnt stTestCnt;
 
 uint32 W_RPM;
 double w_ref;
+double p_ref;
+
 int second_timer = 0;
 double Wd = 0;
 
@@ -100,32 +102,48 @@ static void AppTask1ms(void)
     stTestCnt.u32nuCnt1ms++;
     Conv_rad_per_sec();
 
+    ////POSITION_CONTROL/////
+    //MAKE_TRAJECTORY
+    //
+    //POS_CON_START
 
-    //PID_Vel_Con(pos_pid.Win, g_LPF_Encoder.LPF_rad_per_sec);
-    //PID_Vel_Con2(pos_pid2.Win, g_LPF_Encoder2.LPF_rad_per_sec);
+    //RIGHT
+    currentPos = MakeTrajectoryPos(2500,0,5,(double)stTestCnt.u32nuCnt1ms);
+    currentVel = MakeTrajectoryVel(720,0,20,(double)stTestCnt.u32nuCnt1ms);
+    //LEFT
+    currentPos2 = MakeTrajectoryPos(720,0,5,(double)stTestCnt.u32nuCnt1ms);
+
+    //RIGHT
+    PID_Vel_Con(pos_pid.Win, g_LPF_Encoder2.LPF_rad_per_sec);
+    //LEFT
+    PID_Vel_Con2(pos_pid2.Win, g_LPF_Encoder.LPF_rad_per_sec);
+
+    //POS_CON_END
+
+    //SPEED_CONTROL
+    //
+    //SPEED_CON_START
+
+//        //RIGHT
+//        PID_Vel_Con(mc.rmotorspeed, g_LPF_Encoder2.LPF_rad_per_sec);
+//        //LEFT
+//        PID_Vel_Con2(mc.lmotorspeed, g_LPF_Encoder.LPF_rad_per_sec);
+
+    //
+    //SPEED_CON_END
 
 
-    //PID_Vel_Con(mc.rmotorspeed, g_LPF_Encoder.LPF_rad_per_sec);
-
-    PID_Vel_Con2(mc.lmotorspeed, g_LPF_Encoder2.LPF_rad_per_sec);
-
-
-
-    //currentPos = MakeTrajectoryPos(720,0,5,(double)stTestCnt.u32nuCnt1ms);
-    //currentPos2 = MakeTrajectoryPos(720,0,5,(double)stTestCnt.u32nuCnt1ms);
-
-
-    //setRightMotorDuty(100.0*(vel_pid.Vin)/12);
-
+    //DUTY/////////////////////////////////////
     setLeftMotorDuty(100.0*(vel_pid2.Vin)/12);
+    setRightMotorDuty(100.0*(vel_pid.Vin)/12);
+    ///////////////////////////////////////////
 
-    //Debug Pos
-    //sprintf(str, "%lf\t%lf\t\n",currentPos,g_LPF_Encoder.LPF_Deg);
-    //Debug Vel
-    //sprintf(str, "%lf\t%lf\t\n",pos_pid2.Win,g_LPF_Encoder2.LPF_rad_per_sec);
-    //Debug Kinemaitcs
 
-    sprintf(str, "%lf\t%lf\t\n",g_LPF_Encoder2.LPF_Deg,g_LPF_Encoder2.LPF_rad_per_sec);
+    sprintf(str, "%lf\t%lf\t\n",currentPos,g_LPF_Encoder2.LPF_Deg);
+    //sprintf(str, "%lf\t%lf\t\n",pos_pid.Win,g_LPF_Encoder2.LPF_rad_per_sec);
+
+
+
 }
 static void AppTask10ms(void)
 {
@@ -134,9 +152,12 @@ static void AppTask10ms(void)
 
     DrvAdc_GetAdcRawGroup0();
     data = stSensorAdcRaw.sen1_Raw;
+    //p_ref = 720;
 
-    //PID_Pos_Con(currentPos,g_LPF_Encoder.LPF_Deg);
-    //PID_Pos_Con2(currentPos2,g_LPF_Encoder2.LPF_Deg);
+    //RIGHT
+    PID_Pos_Con(currentPos,g_LPF_Encoder2.LPF_Deg);
+    //LEFT
+    PID_Pos_Con2(currentPos2,g_LPF_Encoder.LPF_Deg);
 
 }
 static void AppTask50ms(void)
@@ -177,7 +198,7 @@ static void AppTask1000ms(void)
     stTestCnt.u32nuCnt1000ms++;
 
     //if now angle 20
-    ds = decision(-20);
+    ds = decision(0);
     mc = kinematics(ds.reference_vx,ds.reference_vy,ds.reference_wz);
 
     if(mc.lmotorspeed>10) mc.lmotorspeed = 10;

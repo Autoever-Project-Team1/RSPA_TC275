@@ -7,9 +7,11 @@
 #include "IfxPort.h"
 #include "Bsp.h"
 
+//LEFT_ENCODER_PIN
 #define A               &MODULE_P33,0
 #define B               &MODULE_P11,9
 
+//RIGHT_ENCODER_PIN
 #define A2              &MODULE_P11,10
 #define B2              &MODULE_P11,11
 
