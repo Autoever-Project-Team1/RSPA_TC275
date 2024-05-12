@@ -11,23 +11,14 @@
 #include "GtmTomPwm.h"
 #include "Encoder.h"
 
-#include "ToF.h"
-#include "Observer.h"
-
-#include "Ultrasonic.h"
-
 #include <stdio.h>
 
 char str[100];
-char str2[100];
 uint32 data = 0;
 
 uint32 f_motor = 0;
 
 uint32 sec = 0;
-
-
-
 
 /*********************************************************************************************************************/
 /*------------------------------------------------------Macros-------------------------------------------------------*/
@@ -65,33 +56,32 @@ TestCnt stTestCnt;
 
 static void AppNoTask(void){
     readEncoderTick();
-    EncoderPulsesToAngle(g_Encoder.AB_Cnt);
 }
 
 static void AppTask1ms(void){
     stTestCnt.u32nuCnt1ms++;
-    //READ GROUP TOF!
-    Nlink_getTofDistance_Tof(4);
-    updateObserver(&observer,Tof_dist_mm[0], Tof_dist_mm[1]);
 
+    //Conv_rad_per_sec();
+    EncoderPulsesToAngle(g_Encoder.AB_Cnt);
+    Angle_To_rad();
+    double Vin = PI_Control(g_Encoder.rad_per_sec_filter, SAMPLETIME);
+    g_GtmTomPwmHl.tOn[0] = Vin/12;
+
+
+    //sprintf(str, "%lf\n",g_Encoder.cur_angle);
+    sprintf(str, "%lf\t%lf\n",g_Encoder.rad_per_sec_filter, Vin);
+
+
+    GtmTomPwmHl_run();
 }
 static void AppTask10ms(void){
     stTestCnt.u32nuCnt10ms++;
-}
-static void AppTask50ms(void){
-    stTestCnt.u32nuCnt50ms++;
-//    if(data > 4000)
-//        //blinkLED();
+
+    DrvAdc_GetAdcRawGroup0();
+    data = stSensorAdcRaw.sen1_Raw;
 
 
-}
-static void AppTask100ms(void){
-    stTestCnt.u32nuCnt100ms++;
 
-    //double yaw = calculateYawAngle(Tof_dist_mm[0], Tof_dist_mm[1]);
-    double yaw = getYawFromObserver(&observer);
-    sprintf(str, "%d\t%d : %lf\t%lf\n", Tof_dist_mm[0], Tof_dist_mm[1], yaw, yaw/PI*180.0);
-    //sprintf(str, "%d\t%d\t%d\t%d\t%d\n", Tof_dist_mm[0], Tof_dist_mm[1], Tof_dist_mm[2], Tof_dist_mm[3], Tof_dist_mm[4]);
 
 
     char idx = 0;
@@ -104,10 +94,17 @@ static void AppTask100ms(void){
         _out_uart3(str[idx++]);
     }
 }
+static void AppTask50ms(void){
+    stTestCnt.u32nuCnt50ms++;
+//    if(data > 4000)
+//        //blinkLED();
+}
+static void AppTask100ms(void){
+    stTestCnt.u32nuCnt100ms++;
+
+}
 static void AppTask500ms(void){
     stTestCnt.u32nuCnt500ms++;
-
-
 
     if(stTestCnt.u32nuCnt500ms % 2 == 0){
         sec++;

@@ -12,7 +12,6 @@
 /*********************************************************************************************************************/
 App_Encoder g_Encoder;
 PI_Controller g_PI_Controller;
-PI_Controller g_PI_Controller_ang;
 
 /*********************************************************************************************************************/
 /*--------------------------------------------Private Variables/Constants--------------------------------------------*/
@@ -31,9 +30,7 @@ void Encoder_Init(void)
     IfxPort_setPinModeInput(B, IfxPort_InputMode_pullUp);
 
     //kp, ki
-    PI_Init(&g_PI_Controller,0.1, 5.0, 50.0);
-
-    //PI_Init(&g_PI_Controller_ang,1.0, 1.0, 50.0);
+    PI_Init(0.1, 5.0, 50.0);
 }
 
 void readEncoderTick(void)
@@ -99,12 +96,12 @@ double low_pass_filter(double input, double prev_output) {
     return output;
 }
 
-void PI_Init(PI_Controller *pid, float Kp, float Ki, float setpoint) {
-    pid->Kp = Kp;
-    pid->Ki = Ki;
-    pid->integral = 0.0f;
-    pid->prev_error = 0.0f;
-    pid->setpoint = setpoint;
+void PI_Init(float Kp, float Ki, float setpoint) {
+    g_PI_Controller.Kp = Kp;
+    g_PI_Controller.Ki = Ki;
+    g_PI_Controller.integral = 0.0f;
+    g_PI_Controller.prev_error = 0.0f;
+    g_PI_Controller.setpoint = setpoint;
 }
 
 double PI_Control(float measured_value, float dt) {
@@ -125,26 +122,6 @@ double PI_Control(float measured_value, float dt) {
 
     return output;
 }
-
-double PI_Control_ang(float measured_value, float dt) {
-    double error = g_PI_Controller_ang.setpoint - measured_value;
-
-    // 적분 항 계산
-    g_PI_Controller_ang.integral += error * dt;
-
-    //안티와인드업
-    if(g_PI_Controller_ang.integral > 100) g_PI_Controller_ang.integral = 100;
-
-    // PI 출력 계산
-    double output = g_PI_Controller_ang.Kp * error + g_PI_Controller_ang.Ki * g_PI_Controller_ang.integral;
-
-    //세츄레이션
-    if(output > 650) output = 650;
-    else if(output < -650) output = 650;
-
-    return output;
-}
-
 
 void EncoderPulsesToAngle(int pulse_count) {
     double angle = ((double)pulse_count / PPR) * 2.0 * PI;

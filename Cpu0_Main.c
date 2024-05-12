@@ -35,12 +35,8 @@
 
 #include "GtmTomPwm.h"
 #include "AppScheduling.h"
-#include "ToF.h"
-
-#include"Observer.h"
 
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
-
 
 void core0_main(void)
 {
@@ -58,13 +54,8 @@ void core0_main(void)
 
 
     initLED();
-
-
-    /******ToF start******/
-    _init_uart0(); //uart
-    _init_uart2(); //init TOF
-    /******ToF end********/
-    _init_uart3(); //Serial
+    _init_uart3();
+    unsigned char c;
 
 
     Driver_Stm_Init();
@@ -74,34 +65,19 @@ void core0_main(void)
 
     Encoder_Init();
 
-
-    Init_Ultrasonics();
-
-
-    initializeObserver(&observer);
-
     IfxCpu_enableInterrupts();
-
-
 
     while(1)
     {
-        //uart read...
 
-//        unsigned char ch;
-//        int res;
-//        res = _nonBlock_poll_uart0(&ch);
-//        if(res == 1)
-//            _out_uart0(ch);
-//        else
-
-
-
-
-
+//        c = _in_uart3();
+//        _out_uart3(c);
+//
+//        if(c == '1'){
+//            blinkLED();
+//            c = '0';
+//        }
         AppScheduling();
-
-
 
     }
 }

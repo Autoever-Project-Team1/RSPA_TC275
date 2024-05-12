@@ -70,7 +70,6 @@ typedef struct {
 
 extern App_Encoder g_Encoder;
 extern PI_Controller g_PI_Controller;
-extern PI_Controller g_PI_Controller_ang;
 
 void Encoder_Init(void);
 void readEncoderTick(void);
@@ -78,7 +77,7 @@ void Conv_rad_per_sec(void);
 
 double low_pass_filter(double input, double prev_output);
 
-void PI_Init(PI_Controller *pid, float Kp, float Ki, float setpoint);
+void PI_Init(float Kp, float Ki, float setpoint);
 
 double PI_Control(float measured_value, float dt);
 
