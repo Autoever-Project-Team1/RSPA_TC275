@@ -1,33 +1,32 @@
 #include "Mobile_Kinematics.h"
 
 
-
-motorspeed kinematics(double Ref_Vx,double Ref_Vy, double Ref_Wz)
+Motor_Speed kinematics(double Ref_Vx,double Ref_Vy, double Ref_Wz)
 {
-    motorspeed mycarspeed;
+    Motor_Speed mycarspeed;
 
-    mycarspeed.lmotorspeed = (2*Ref_Vx/RADIUS + 2*Ref_Vy/RADIUS + 2*DISTANCE*Ref_Wz/RADIUS)/1;
-    mycarspeed.rmotorspeed = (2*Ref_Vx/RADIUS + 2*Ref_Vy/RADIUS - 2*DISTANCE*Ref_Wz/RADIUS)/1;
+    mycarspeed.Left_Motor_Speed = (2*Ref_Vx/RADIUS + 2*Ref_Vy/RADIUS + 2*DISTANCE*Ref_Wz/RADIUS)/1;
+    mycarspeed.Right_Motor_Speed = (2*Ref_Vx/RADIUS + 2*Ref_Vy/RADIUS - 2*DISTANCE*Ref_Wz/RADIUS)/1;
 
     return mycarspeed;
 
 }
 
-decision_speed decision(double angle)
+Decision_Speed decision(double angle)
 {
-    decision_speed  mycarspeed_decision;
+    Decision_Speed  mycarspeed_decision;
 
-    mycarspeed_decision.reference_vx = 3;
+    mycarspeed_decision.Reference_Vx = 0.5;
 
     if (angle > 10)
     {
-        mycarspeed_decision.reference_wz = 1;
-        mycarspeed_decision.reference_vy = 0;
+        mycarspeed_decision.Reference_Wz = 1;
+        mycarspeed_decision.Reference_Vy = 0;
     }
     else if (angle < -10)
     {
-        mycarspeed_decision.reference_wz = -1;
-        mycarspeed_decision.reference_vy = 0;
+        mycarspeed_decision.Reference_Wz = -1;
+        mycarspeed_decision.Reference_Vy = 0;
     }
 
     return mycarspeed_decision;

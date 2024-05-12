@@ -6,10 +6,13 @@
 /*********************************************************************************************************************/
 #include "IfxPort.h"
 #include "Bsp.h"
-//RIGHT
-#define DIR_PIN             &MODULE_P10,2
 //LEFT
-#define DIR_PIN2            &MODULE_P10,1
+#define LEFT_MOTOR_DIR_PIN             &MODULE_P10,1
+//RIGHT
+#define RIGHT_MOTOR_DIR_PIN             &MODULE_P10,2
+
+//dir2  = LEFT_MOTOR_DIR_PIN
+
 
 /*********************************************************************************************************************/
 /*------------------------------------------------------Macros-------------------------------------------------------*/
@@ -48,11 +51,11 @@ typedef struct
 /*********************************************************************************************************************/
 /*--------------------------------------------Private Variables/Constants--------------------------------------------*/
 /*********************************************************************************************************************/
-extern PID_Vel_Config vel_pid;
-extern PID_Pos_Config pos_pid;
+extern PID_Vel_Config Right_Vel_PID;
+extern PID_Pos_Config Right_Pos_PID;
 
-extern PID_Vel_Config vel_pid2;
-extern PID_Pos_Config pos_pid2;
+extern PID_Vel_Config Left_Vel_PID;
+extern PID_Pos_Config Left_Pos_PID;
 /*********************************************************************************************************************/
 /*------------------------------------------------Function Prototypes------------------------------------------------*/
 /*********************************************************************************************************************/
@@ -60,5 +63,10 @@ extern PID_Pos_Config pos_pid2;
 void PID_Pos_Controller_Init(void);
 void PID_Vel_Controller_Init(void);
 
+void LeftMotor_Pos_PID_Controller(double Target,double Input);
+void LeftMotor_Vel_PID_Controller(double Target,double Input);
+
+void RightMotor_Pos_PID_Controller(double Target,double Input);
+void RightMotor_Vel_PID_Controller(double Target,double Input);
 
 #endif /* PID_CONTROLLER_H_ */

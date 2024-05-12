@@ -10,11 +10,11 @@
 /*********************************************************************************************************************/
 /*-------------------------------------------------Global variables--------------------------------------------------*/
 /*********************************************************************************************************************/
-App_Encoder g_Encoder;
-App_LPF_Encoder g_LPF_Encoder;
+App_Encoder Left_Encoder;
+App_LPF_Encoder Left_LPF_Encoder;
 
-App_Encoder g_Encoder2;
-App_LPF_Encoder g_LPF_Encoder2;
+App_Encoder Right_Encoder;
+App_LPF_Encoder Right_LPF_Encoder;
 
 /*********************************************************************************************************************/
 /*--------------------------------------------Private Variables/Constants--------------------------------------------*/
@@ -41,86 +41,86 @@ void Encoder_Init(void)
 void readEncoderTick(void)
 {
     /*****A,B******/
-    g_Encoder.A_data = IfxPort_getPinState(A);
-    g_Encoder.B_data = IfxPort_getPinState(B);
-    g_Encoder.AB_data = (g_Encoder.A_data << 1) | g_Encoder.B_data;
+    Left_Encoder.A_data = IfxPort_getPinState(A);
+    Left_Encoder.B_data = IfxPort_getPinState(B);
+    Left_Encoder.AB_data = (Left_Encoder.A_data << 1) | Left_Encoder.B_data;
 
-    if(g_Encoder.AB_data == 0){
-        if(g_Encoder.AB_bef == 1){
-            g_Encoder.AB_Cnt--;
+    if(Left_Encoder.AB_data == 0){
+        if(Left_Encoder.AB_bef == 1){
+            Left_Encoder.AB_Cnt--;
         }
-        if(g_Encoder.AB_bef == 2){
-            g_Encoder.AB_Cnt++;
-        }
-    }
-    else if(g_Encoder.AB_data == 1){
-        if(g_Encoder.AB_bef == 3){
-            g_Encoder.AB_Cnt--;
-        }
-        if(g_Encoder.AB_bef == 0){
-            g_Encoder.AB_Cnt++;
+        if(Left_Encoder.AB_bef == 2){
+            Left_Encoder.AB_Cnt++;
         }
     }
-    else if(g_Encoder.AB_data == 2){
-        if(g_Encoder.AB_bef == 0){
-            g_Encoder.AB_Cnt--;
+    else if(Left_Encoder.AB_data == 1){
+        if(Left_Encoder.AB_bef == 3){
+            Left_Encoder.AB_Cnt--;
         }
-        if(g_Encoder.AB_bef == 3){
-            g_Encoder.AB_Cnt++;
+        if(Left_Encoder.AB_bef == 0){
+            Left_Encoder.AB_Cnt++;
         }
     }
-    else if(g_Encoder.AB_data == 3){
-        if(g_Encoder.AB_bef == 2){
-            g_Encoder.AB_Cnt--;
+    else if(Left_Encoder.AB_data == 2){
+        if(Left_Encoder.AB_bef == 0){
+            Left_Encoder.AB_Cnt--;
         }
-        if(g_Encoder.AB_bef == 1){
-            g_Encoder.AB_Cnt++;
+        if(Left_Encoder.AB_bef == 3){
+            Left_Encoder.AB_Cnt++;
+        }
+    }
+    else if(Left_Encoder.AB_data == 3){
+        if(Left_Encoder.AB_bef == 2){
+            Left_Encoder.AB_Cnt--;
+        }
+        if(Left_Encoder.AB_bef == 1){
+            Left_Encoder.AB_Cnt++;
         }
     }
 
-    g_Encoder.AB_bef = g_Encoder.AB_data;
+    Left_Encoder.AB_bef = Left_Encoder.AB_data;
 
 
     /*****A2,B2******/
 
-    g_Encoder2.A_data = IfxPort_getPinState(A2);
-    g_Encoder2.B_data = IfxPort_getPinState(B2);
-    g_Encoder2.AB_data = (g_Encoder2.A_data << 1) | g_Encoder2.B_data;
+    Right_Encoder.A_data = IfxPort_getPinState(A2);
+    Right_Encoder.B_data = IfxPort_getPinState(B2);
+    Right_Encoder.AB_data = (Right_Encoder.A_data << 1) | Right_Encoder.B_data;
 
-    if(g_Encoder2.AB_data == 0){
-        if(g_Encoder2.AB_bef == 1){
-            g_Encoder2.AB_Cnt--;
+    if(Right_Encoder.AB_data == 0){
+        if(Right_Encoder.AB_bef == 1){
+            Right_Encoder.AB_Cnt--;
         }
-        if(g_Encoder2.AB_bef == 2){
-            g_Encoder2.AB_Cnt++;
-        }
-    }
-    else if(g_Encoder2.AB_data == 1){
-        if(g_Encoder2.AB_bef == 3){
-            g_Encoder2.AB_Cnt--;
-        }
-        if(g_Encoder2.AB_bef == 0){
-            g_Encoder2.AB_Cnt++;
+        if(Right_Encoder.AB_bef == 2){
+            Right_Encoder.AB_Cnt++;
         }
     }
-    else if(g_Encoder2.AB_data == 2){
-        if(g_Encoder2.AB_bef == 0){
-            g_Encoder2.AB_Cnt--;
+    else if(Right_Encoder.AB_data == 1){
+        if(Right_Encoder.AB_bef == 3){
+            Right_Encoder.AB_Cnt--;
         }
-        if(g_Encoder2.AB_bef == 3){
-            g_Encoder2.AB_Cnt++;
+        if(Right_Encoder.AB_bef == 0){
+            Right_Encoder.AB_Cnt++;
         }
     }
-    else if(g_Encoder2.AB_data == 3){
-        if(g_Encoder2.AB_bef == 2){
-            g_Encoder2.AB_Cnt--;
+    else if(Right_Encoder.AB_data == 2){
+        if(Right_Encoder.AB_bef == 0){
+            Right_Encoder.AB_Cnt--;
         }
-        if(g_Encoder2.AB_bef == 1){
-            g_Encoder2.AB_Cnt++;
+        if(Right_Encoder.AB_bef == 3){
+            Right_Encoder.AB_Cnt++;
+        }
+    }
+    else if(Right_Encoder.AB_data == 3){
+        if(Right_Encoder.AB_bef == 2){
+            Right_Encoder.AB_Cnt--;
+        }
+        if(Right_Encoder.AB_bef == 1){
+            Right_Encoder.AB_Cnt++;
         }
     }
 
-    g_Encoder2.AB_bef = g_Encoder2.AB_data;
+    Right_Encoder.AB_bef = Right_Encoder.AB_data;
 
 
 
@@ -132,38 +132,32 @@ void Conv_rad_per_sec(void)
     /*****A,B******/
 
 
-    g_Encoder.diffCnt = g_Encoder.AB_Cnt - g_Encoder.AB_Cnt_bef;
+    Left_Encoder.diffCnt = Left_Encoder.AB_Cnt - Left_Encoder.AB_Cnt_bef;
 
-    g_Encoder.rad_per_sec = (double)(g_Encoder.diffCnt)*2*PI / (SAMPLETIME * PPR * GEAR_RATIO);
+    Left_Encoder.rad_per_sec = (double)(Left_Encoder.diffCnt)*2*PI / (SAMPLETIME * PPR * GEAR_RATIO);
 
-    g_Encoder.AB_Cnt_bef = g_Encoder.AB_Cnt;
+    Left_Encoder.AB_Cnt_bef = Left_Encoder.AB_Cnt;
 
-    g_LPF_Encoder.LPF_rad_per_sec = LPF(g_LPF_Encoder.LPF_rad_per_sec_bef,g_Encoder.rad_per_sec,100,0.001);
-    g_LPF_Encoder.LPF_rad_per_sec_bef = g_LPF_Encoder.LPF_rad_per_sec;
+    Left_LPF_Encoder.LPF_rad_per_sec = LPF(Left_LPF_Encoder.LPF_rad_per_sec_bef,Left_Encoder.rad_per_sec,100,0.001);
+    Left_LPF_Encoder.LPF_rad_per_sec_bef = Left_LPF_Encoder.LPF_rad_per_sec;
 
-    g_LPF_Encoder.LPF_Deg += g_LPF_Encoder.LPF_rad_per_sec * SAMPLETIME *360 / (2*PI);
+    Left_LPF_Encoder.LPF_Deg += Left_LPF_Encoder.LPF_rad_per_sec * SAMPLETIME *360 / (2*PI);
     //if(g_LPF_Encoder.LPF_Deg>360)g_LPF_Encoder.LPF_Deg = 0;
 
 
     /*******A2,B2******/
 
-    g_Encoder2.diffCnt = g_Encoder2.AB_Cnt - g_Encoder2.AB_Cnt_bef;
+    Right_Encoder.diffCnt = Right_Encoder.AB_Cnt - Right_Encoder.AB_Cnt_bef;
 
-    g_Encoder2.rad_per_sec = (double)(g_Encoder2.diffCnt)*2*PI / (SAMPLETIME * PPR * GEAR_RATIO);
+    Right_Encoder.rad_per_sec = (double)(Right_Encoder.diffCnt)*2*PI / (SAMPLETIME * PPR * GEAR_RATIO);
 
-    g_Encoder2.AB_Cnt_bef = g_Encoder2.AB_Cnt;
+    Right_Encoder.AB_Cnt_bef = Right_Encoder.AB_Cnt;
 
-    g_LPF_Encoder2.LPF_rad_per_sec = LPF(g_LPF_Encoder2.LPF_rad_per_sec_bef,g_Encoder2.rad_per_sec,100,0.001);
-    g_LPF_Encoder2.LPF_rad_per_sec_bef = g_LPF_Encoder2.LPF_rad_per_sec;
+    Right_LPF_Encoder.LPF_rad_per_sec = LPF(Right_LPF_Encoder.LPF_rad_per_sec_bef,Right_Encoder.rad_per_sec,100,0.001);
+    Right_LPF_Encoder.LPF_rad_per_sec_bef = Right_LPF_Encoder.LPF_rad_per_sec;
 
-    g_LPF_Encoder2.LPF_Deg += g_LPF_Encoder2.LPF_rad_per_sec * SAMPLETIME *360 / (2*PI);
+    Right_LPF_Encoder.LPF_Deg += Right_LPF_Encoder.LPF_rad_per_sec * SAMPLETIME *360 / (2*PI);
     //if(g_LPF_Encoder.LPF_Deg>360)g_LPF_Encoder.LPF_Deg = 0;
-
-
-
-
-
-
 
 
 

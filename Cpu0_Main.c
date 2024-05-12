@@ -78,7 +78,7 @@ void core0_main(void)
     //init_gpt2();
     Init_DCMotors();
 
-    //IfxPort_setPinLow(BREAK_A);    /* 모터 정지 (1: 정지, 0: PWM-B에 따라 동작)*/
+    IfxPort_setPinLow(BREAK_A);    /* 모터 정지 (1: 정지, 0: PWM-B에 따라 동작)*/
 
     IfxPort_setPinLow(BREAK_B);    /* 모터 정지 (1: 정지, 0: PWM-B에 따라 동작)*/
 

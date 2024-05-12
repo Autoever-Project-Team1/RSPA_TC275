@@ -73,12 +73,15 @@ int second_timer = 0;
 double Wd = 0;
 
 double pos_target=0;
+double random_angle=0;
 
-double currentPos=0;
-double currentVel=0;
+double Left_Motor_Pos_Trajectory=0;
+double Left_Motor_Vel_Trajectory=0;
 
-double currentPos2=0;
-double currentVel2=0;
+double Right_Motor_Pos_Trajectory=0;
+double Right_Motor_Vel_Trajectory=0;
+
+
 
 extern double Target;
 extern double TargetV;
@@ -87,8 +90,8 @@ extern int g_cnt;
 extern unsigned int lMotorDuty;
 extern unsigned int rMotorDuty;
 
-motorspeed mc;
-decision_speed ds;
+Motor_Speed App_Motor_Speed;
+Decision_Speed App_Decision_Speed;
 
 static void AppNoTask(void)
 {
@@ -107,16 +110,18 @@ static void AppTask1ms(void)
     //
     //POS_CON_START
 
-    //RIGHT
-    currentPos = MakeTrajectoryPos(2500,0,5,(double)stTestCnt.u32nuCnt1ms);
-    currentVel = MakeTrajectoryVel(720,0,20,(double)stTestCnt.u32nuCnt1ms);
-    //LEFT
-    currentPos2 = MakeTrajectoryPos(720,0,5,(double)stTestCnt.u32nuCnt1ms);
+//    //RIGHT
+//    Right_Motor_Pos_Trajectory = MakeTrajectoryPos(360,0,5,(double)stTestCnt.u32nuCnt1ms);
+//    Right_Motor_Vel_Trajectory = MakeTrajectoryVel(360,0,5,(double)stTestCnt.u32nuCnt1ms);
+//    //LEFT
+//    Left_Motor_Pos_Trajectory = MakeTrajectoryPos(360,0,5,(double)stTestCnt.u32nuCnt1ms);
+//    Left_Motor_Vel_Trajectory = MakeTrajectoryVel(360,0,5,(double)stTestCnt.u32nuCnt1ms);
+//
+//    //LEFT
+//    LeftMotor_Vel_PID_Controller(Left_Pos_PID.Win, Left_LPF_Encoder.LPF_rad_per_sec);
+//    //RIGHT
+//    RightMotor_Vel_PID_Controller(Right_Pos_PID.Win, Right_LPF_Encoder.LPF_rad_per_sec);
 
-    //RIGHT
-    PID_Vel_Con(pos_pid.Win, g_LPF_Encoder2.LPF_rad_per_sec);
-    //LEFT
-    PID_Vel_Con2(pos_pid2.Win, g_LPF_Encoder.LPF_rad_per_sec);
 
     //POS_CON_END
 
@@ -124,23 +129,24 @@ static void AppTask1ms(void)
     //
     //SPEED_CON_START
 
-//        //RIGHT
-//        PID_Vel_Con(mc.rmotorspeed, g_LPF_Encoder2.LPF_rad_per_sec);
-//        //LEFT
-//        PID_Vel_Con2(mc.lmotorspeed, g_LPF_Encoder.LPF_rad_per_sec);
+    //LEFT
+    LeftMotor_Vel_PID_Controller(App_Motor_Speed.Left_Motor_Speed, Left_LPF_Encoder.LPF_rad_per_sec);
+    //RIGHT
+    RightMotor_Vel_PID_Controller(App_Motor_Speed.Right_Motor_Speed, Right_LPF_Encoder.LPF_rad_per_sec);
+
 
     //
     //SPEED_CON_END
 
 
     //DUTY/////////////////////////////////////
-    setLeftMotorDuty(100.0*(vel_pid2.Vin)/12);
-    setRightMotorDuty(100.0*(vel_pid.Vin)/12);
+    setLeftMotorDuty(100.0*(Left_Vel_PID.Vin)/12);
+    setRightMotorDuty(100.0*(Right_Vel_PID.Vin)/12);
     ///////////////////////////////////////////
 
 
-    sprintf(str, "%lf\t%lf\t\n",currentPos,g_LPF_Encoder2.LPF_Deg);
-    //sprintf(str, "%lf\t%lf\t\n",pos_pid.Win,g_LPF_Encoder2.LPF_rad_per_sec);
+    sprintf(str, "%lf\t%lf\t%lf\t\n",App_Motor_Speed.Left_Motor_Speed,App_Motor_Speed.Right_Motor_Speed,random_angle);
+    //sprintf(str, "%lf\t%lf\t\n",Right_Pos_PID.Win,Right_LPF_Encoder.LPF_rad_per_sec);
 
 
 
@@ -150,14 +156,16 @@ static void AppTask10ms(void)
     /*count*/
     stTestCnt.u32nuCnt10ms++;
 
+    //ADC
     DrvAdc_GetAdcRawGroup0();
     data = stSensorAdcRaw.sen1_Raw;
-    //p_ref = 720;
 
-    //RIGHT
-    PID_Pos_Con(currentPos,g_LPF_Encoder2.LPF_Deg);
+
     //LEFT
-    PID_Pos_Con2(currentPos2,g_LPF_Encoder.LPF_Deg);
+    LeftMotor_Pos_PID_Controller(Left_Motor_Pos_Trajectory,Left_LPF_Encoder.LPF_Deg);
+    //RIGHT
+    RightMotor_Pos_PID_Controller(Right_Motor_Pos_Trajectory,Right_LPF_Encoder.LPF_Deg);
+
 
 }
 static void AppTask50ms(void)
@@ -198,11 +206,15 @@ static void AppTask1000ms(void)
     stTestCnt.u32nuCnt1000ms++;
 
     //if now angle 20
-    ds = decision(0);
-    mc = kinematics(ds.reference_vx,ds.reference_vy,ds.reference_wz);
 
-    if(mc.lmotorspeed>10) mc.lmotorspeed = 10;
-    if(mc.rmotorspeed>10) mc.rmotorspeed = 10;
+    random_angle = 15*sin(stTestCnt.u32nuCnt100ms);
+
+
+    App_Decision_Speed = decision(random_angle);
+    App_Motor_Speed = kinematics(App_Decision_Speed.Reference_Vx,App_Decision_Speed.Reference_Vy,App_Decision_Speed.Reference_Wz);
+
+    if(App_Motor_Speed.Left_Motor_Speed>10) App_Motor_Speed.Left_Motor_Speed = 10;
+    if(App_Motor_Speed.Right_Motor_Speed>10) App_Motor_Speed.Right_Motor_Speed = 10;
 
 
 }

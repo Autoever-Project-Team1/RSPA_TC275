@@ -6,21 +6,23 @@
 
 typedef struct
 {
-  double lmotorspeed;
-  double rmotorspeed;
-}motorspeed;
+
+  double Left_Motor_Speed;
+  double Right_Motor_Speed;
+
+}Motor_Speed;
 
 typedef struct
 {
-        double reference_vx;
-        double reference_vy;
-        double reference_wz;
+        double Reference_Vx;
+        double Reference_Vy;
+        double Reference_Wz;
 
-}decision_speed;
+}Decision_Speed;
 
 
-motorspeed kinematics(double Ref_Vx,double Ref_Vy, double Ref_Wz);
-decision_speed decision(double angle);
+Motor_Speed kinematics(double Ref_Vx,double Ref_Vy, double Ref_Wz);
+Decision_Speed decision(double angle);
 
 
 

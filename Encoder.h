@@ -62,11 +62,11 @@ typedef struct
 /*------------------------------------------------Function Prototypes------------------------------------------------*/
 /*********************************************************************************************************************/
 
-extern App_Encoder g_Encoder;
-extern App_LPF_Encoder g_LPF_Encoder;
+extern App_Encoder Left_Encoder;
+extern App_LPF_Encoder Left_LPF_Encoder;
 
-extern App_Encoder g_Encoder2;
-extern App_LPF_Encoder g_LPF_Encoder2;
+extern App_Encoder Right_Encoder;
+extern App_LPF_Encoder Right_LPF_Encoder;
 
 
 void Encoder_Init(void);
