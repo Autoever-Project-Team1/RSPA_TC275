@@ -28,7 +28,50 @@ void readBlutooth(void){
     int res;
     res = _nonBlock_poll_uart0(&c);
 
+    if(res){
+        if(g_firstBluConnect == 0){
+            if(c == 'p' || c == 'P' || c == 'e' || c == 'E'){
+                start_signature_sound();
+                g_firstBluConnect = 1;
+            }
+        }
 
+        if(c == 'p'){
+            g_Moveflag.parkingStop = 1;
+            g_Moveflag.parkingMove = 0;
+        }
+        else if(c == 'P'){
+            g_Moveflag.parkingStop = 0;
+            g_Moveflag.parkingMove = 1;
+        }
+        else if(c == 'e'){
+            g_Moveflag.exitStop = 1;
+            g_Moveflag.exitMove = 0;
+        }
+        else if(c == 'E'){
+            g_Moveflag.exitStop = 0;
+            g_Moveflag.exitMove = 1;
+        }
+
+        //꾹 누름 확인?
+        if(g_Detectionfront.Stop || g_DetectionBack.Stop){
+            if(bef_p_state == c){
+                g_Moveflag.parkingStop = 1;
+                g_Moveflag.parkingMove = 0;
+            }
+            if(bef_e_state == c){
+                g_Moveflag.exitStop = 1;
+                g_Moveflag.exitMove = 0;
+            }
+        }
+
+        if(c == 'p' || c == 'P'){
+            bef_p_state = c;
+        }
+        else if(c == 'e' || c == 'E'){
+            bef_e_state = c;
+        }
+    }
 }
 
 void Bluetooth_init(void){
