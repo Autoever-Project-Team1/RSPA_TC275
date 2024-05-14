@@ -24,7 +24,7 @@ static void AppTask500ms(void);
 TestCnt stTestCnt;
 
 static void AppNoTask(void){
-    //getButtonState(); //read button state by polling
+    getButtonState(); //read button state by polling
 }
 
 static void AppTask1ms(void){
