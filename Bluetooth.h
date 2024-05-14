@@ -1,12 +1,19 @@
 #ifndef BLUETOOTH_H_
 #define BLUETOOTH_H_
 
-void _init_uart2(void);
-void _out_uart2(const unsigned char chr);
-unsigned char _in_uart2(void);
-int _poll_uart2(unsigned char *chr);
+#include "Ifx_Types.h"
 
-void Bluetooth_Init(void);
-void SendBluetoothData_500ms_cycle(void);
+typedef struct{
+        uint8 parkingMove;
+        uint8 parkingStop;
+        uint8 exitMove;
+        uint8 exitStop;
+}Moveflag;
+
+extern Moveflag g_Moveflag;
+extern uint8 g_firstBluConnect;
+
+void readBlutooth(void);
+void Bluetooth_init(void);
 
 #endif /* BLUETOOTH_H_ */
