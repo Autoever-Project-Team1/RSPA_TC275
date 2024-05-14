@@ -23,7 +23,13 @@ uint8 g_firstBluConnect;
 char bef_p_state = 0;
 char bef_e_state = 0;
 
+void readBlutooth(void){
+    unsigned char c;
+    int res;
+    res = _nonBlock_poll_uart0(&c);
 
+
+}
 
 void Bluetooth_init(void){
    _init_uart0();
