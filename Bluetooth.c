@@ -5,7 +5,7 @@
 #include "Cpu/Irq/IfxCpu_Irq.h"
 #include <stdio.h>
 #include "IfxStdIf_DPipe.h"
-#include "Asclin/Std/IfxAsclin.h"
+#include "Asclin/Std/IfxAsclin.h"//
 
 #define ASC_TX_BUFFER_SIZE      256
 #define ASC_RX_BUFFER_SIZE      256
