@@ -47,8 +47,15 @@ void Init_Buzzer()
     init_gpt1();
     runGpt12_T3();
 
-
+    setToneCycle(tone[7]);
+    setBeepCycle(0);
 }
+
+void setBeepCycle(int cycle)
+{
+    beepOnOff = cycle*28;
+}
+
 
 
 void init_gpt1(void)
