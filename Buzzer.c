@@ -24,7 +24,19 @@ int SongMode = 0;
 IFX_INTERRUPT(IsrGpt120T3Handler_Beep, 0, ISR_PRIORITY_GPT1T3_TIMER);
 void IsrGpt120T3Handler_Beep()
 {
+    //this.. song
+    if(SongMode > 0){
+        setToneCycle(H_sound[SongMode-1]);
 
+        if(beepCnt % 5000 == 0){
+            SongMode++;
+        }
+
+        if(SongMode == 10){
+            SongMode = 0;
+            setToneCycle(tone[7]);
+        }
+    }
 
     //this.. buzz...
     if ((beepCnt < beepOnOff) || (beepOnOff == 28) || (SongMode > 0)) {
@@ -56,7 +68,15 @@ void setBeepCycle(int cycle)
     beepOnOff = cycle*28;
 }
 
+void setToneCycle(int cycle)
+{
+    toneOnOff = FREQUENCY / cycle;
+}
 
+void start_signature_sound(void){
+    beepCnt = 0;
+    SongMode = 1;
+}
 
 void init_gpt1(void)
 {
