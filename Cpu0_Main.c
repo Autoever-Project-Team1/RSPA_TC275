@@ -33,6 +33,7 @@
 #include "Driver_STM.h"
 #include "Driver_ADC.h"
 #include "PID_Controller.h"
+#include "ToF.h"
 
 
 #include "GtmTomPwm.h"
@@ -60,6 +61,7 @@ void core0_main(void)
 
     initLED();
     _init_uart3();
+    _init_uart2();
     unsigned char c;
 
 
@@ -84,6 +86,7 @@ void core0_main(void)
 
     PID_Vel_Controller_Init();
     PID_Pos_Controller_Init();
+    PID_App_Controller_Init();
 
 
     while(1)

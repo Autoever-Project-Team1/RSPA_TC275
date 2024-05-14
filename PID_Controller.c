@@ -15,6 +15,9 @@ PID_Pos_Config Right_Pos_PID;
 
 PID_Vel_Config Left_Vel_PID;
 PID_Pos_Config Left_Pos_PID;
+
+PID_Pos_Config Wall_Follow_Distance_PID;
+PID_Pos_Config Wall_Follow_Angle_PID;
 /*********************************************************************************************************************/
 /*--------------------------------------------Private Variables/Constants--------------------------------------------*/
 /*********************************************************************************************************************/
@@ -49,6 +52,19 @@ void PID_Vel_Controller_Init(void)
     Right_Vel_PID.Kp = 2.2;
     Right_Vel_PID.Ki = 1.5;
 
+}
+void PID_App_Controller_Init(void)
+{
+    //
+    Wall_Follow_Distance_PID.Kp = 0.5;
+    Wall_Follow_Distance_PID.Ki = 0.3;
+    Wall_Follow_Distance_PID.Kd = 0.1;
+    Wall_Follow_Distance_PID.error_p_d = 0;
+       //
+    Wall_Follow_Angle_PID.Kp = 1.8;
+    Wall_Follow_Angle_PID.Ki = 0.0;
+    Wall_Follow_Angle_PID.Kd = 0.5;
+    Wall_Follow_Angle_PID.error_p_d = 0;
 }
 
 void LeftMotor_Pos_PID_Controller(double Target, double Input) {
@@ -152,4 +168,52 @@ void RightMotor_Vel_PID_Controller(double Target,double Input)
 
 }
 
+void Wall_Follow_Distance_PID_Controller(double Target,double Input)
+{
+        Wall_Follow_Distance_PID.error_p = Target - Input;
+
+        Wall_Follow_Distance_PID.error_p_d =  Wall_Follow_Distance_PID.error_p - Wall_Follow_Distance_PID.error_p_d_old;
+        Wall_Follow_Distance_PID.error_p_d_old = Wall_Follow_Distance_PID.error_p;
+
+
+        Wall_Follow_Distance_PID.error_p_int = Wall_Follow_Distance_PID.error_p_int_old + Wall_Follow_Distance_PID.error_p * 0.001;
+        Wall_Follow_Distance_PID.error_p_int_old = Wall_Follow_Distance_PID.error_p_int;
+
+        if (Wall_Follow_Distance_PID.error_p_int > 10) Wall_Follow_Distance_PID.error_p_int = 10;
+
+        Wall_Follow_Distance_PID.Win =
+                Wall_Follow_Distance_PID.Kp * Wall_Follow_Distance_PID.error_p +
+                Wall_Follow_Distance_PID.Ki * Wall_Follow_Distance_PID.error_p_int +
+                Wall_Follow_Distance_PID.Kd *Wall_Follow_Distance_PID.error_p_d;
+
+        if (Wall_Follow_Distance_PID.Win > 10) {
+            Wall_Follow_Distance_PID.Win = 10;
+        } else if (Wall_Follow_Distance_PID.Win < -10) {
+            Wall_Follow_Distance_PID.Win = -10;
+        }
+}
+void Wall_Follow_Angle_PID_Controller(double Target,double Input)
+{
+    Wall_Follow_Angle_PID.error_p = Target - Input;
+
+    Wall_Follow_Angle_PID.error_p_d =  Wall_Follow_Angle_PID.error_p - Wall_Follow_Angle_PID.error_p_d_old;
+    Wall_Follow_Angle_PID.error_p_d_old = Wall_Follow_Angle_PID.error_p;
+
+
+    Wall_Follow_Angle_PID.error_p_int = Wall_Follow_Angle_PID.error_p_int_old + Wall_Follow_Angle_PID.error_p * 0.001;
+    Wall_Follow_Angle_PID.error_p_int_old = Wall_Follow_Angle_PID.error_p_int;
+
+    if (Wall_Follow_Angle_PID.error_p_int > 10) Wall_Follow_Angle_PID.error_p_int = 10;
+
+    Wall_Follow_Angle_PID.Win =
+            Wall_Follow_Angle_PID.Kp * Wall_Follow_Angle_PID.error_p +
+            Wall_Follow_Angle_PID.Ki * Wall_Follow_Angle_PID.error_p_int +
+            Wall_Follow_Angle_PID.Kd *Wall_Follow_Angle_PID.error_p_d;
+
+    if (Wall_Follow_Angle_PID.Win > 10) {
+        Wall_Follow_Angle_PID.Win = 10;
+    } else if (Wall_Follow_Angle_PID.Win < -10) {
+        Wall_Follow_Angle_PID.Win = -10;
+    }
+}
 

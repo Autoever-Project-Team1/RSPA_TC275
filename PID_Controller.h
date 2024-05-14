@@ -56,17 +56,24 @@ extern PID_Pos_Config Right_Pos_PID;
 
 extern PID_Vel_Config Left_Vel_PID;
 extern PID_Pos_Config Left_Pos_PID;
+
+extern PID_Pos_Config Wall_Follow_Distance_PID;
+extern PID_Pos_Config Wall_Follow_Angle_PID;
 /*********************************************************************************************************************/
 /*------------------------------------------------Function Prototypes------------------------------------------------*/
 /*********************************************************************************************************************/
 
 void PID_Pos_Controller_Init(void);
 void PID_Vel_Controller_Init(void);
+void PID_App_Controller_Init(void);
 
 void LeftMotor_Pos_PID_Controller(double Target,double Input);
 void LeftMotor_Vel_PID_Controller(double Target,double Input);
 
 void RightMotor_Pos_PID_Controller(double Target,double Input);
 void RightMotor_Vel_PID_Controller(double Target,double Input);
+
+void Wall_Follow_Distance_PID_Controller(double Target,double Input);
+void Wall_Follow_Angle_PID_Controller(double Target,double Input);
 
 #endif /* PID_CONTROLLER_H_ */
