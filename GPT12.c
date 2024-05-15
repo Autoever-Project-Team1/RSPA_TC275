@@ -7,13 +7,12 @@
 #include "Ifx_Types.h"
 #include "IfxGpt12.h"
 #include "IfxPort.h"
-//#include "Buzzer.h"
 #include "asclin.h"
 #include "isr_priority.h"
 
 #define ISR_PROVIDER_GPT12_TIMER    0       //IfxSrc_Tos_cpu0
-#define GPT1_BLOCK_PRESCALER        32      /* GPT1 block prescaler value                 */
-#define TIMER_T3_INPUT_PRESCALER    32      /* Timer input prescaler value                */
+//#define GPT1_BLOCK_PRESCALER        32      /* GPT1 block prescaler value                 */
+//#define TIMER_T3_INPUT_PRESCALER    32      /* Timer input prescaler value                */
 #define GPT120_MODULE_FREQUENCY     100000000
 
 #define PWM_A       &MODULE_P02,1
@@ -86,36 +85,36 @@ void setcntDelay(unsigned int n)
     cntDelay = n;
 }
 
-void init_gpt1(void)
-{
-    /* Initialize the GPT12 module */
-    IfxGpt12_enableModule(&MODULE_GPT120); /* Enable the GPT12 module */
-
-    /* Initialize the Timer T3 (PWM) */
-    IfxGpt12_setGpt1BlockPrescaler(&MODULE_GPT120, IfxGpt12_Gpt1BlockPrescaler_32); /* Set GPT1 block prescaler: 32 */
-    IfxGpt12_T3_setMode(&MODULE_GPT120, IfxGpt12_Mode_timer);                       /* Set T3 to timer mode */
-    IfxGpt12_T3_setTimerDirection(&MODULE_GPT120, IfxGpt12_TimerDirection_down);    /* Set T3 count direction(down) */
-    IfxGpt12_T3_setTimerPrescaler(&MODULE_GPT120, IfxGpt12_TimerInputPrescaler_32); /* Set T3 input prescaler(2^5=32) */
-
-    /* Calculate dutyUpTime and dutyDownTime for reloading timer T3 */
-    IfxGpt12_T3_setTimerValue(&MODULE_GPT120, 100);       /* Set timer T3 value */
-
-    /* Timer T2: reloads the value DutyDownTime in timer T3 */
-    IfxGpt12_T2_setMode(&MODULE_GPT120, IfxGpt12_Mode_reload);                                  /* Set the timer T2 in reload mode */
-    IfxGpt12_T2_setReloadInputMode(&MODULE_GPT120, IfxGpt12_ReloadInputMode_bothEdgesTxOTL);    /* Reload Input Mode : Rising/Falling Edge T3OTL */
-    IfxGpt12_T2_setTimerValue(&MODULE_GPT120, 100);
-
-    /* Initialize the interrupt */
-    volatile Ifx_SRC_SRCR *src = IfxGpt12_T3_getSrc(&MODULE_GPT120);                /* Get the interrupt address    */
-    IfxSrc_init(src, ISR_PROVIDER_GPT12_TIMER, ISR_PRIORITY_GPT1T3_TIMER);          /* Initialize service request   */
-    IfxSrc_enable(src);                                                             /* Enable GPT12 interrupt       */
-
-    /* Initialize the Timer T4 for Ultrasonic */
-    IfxGpt12_T4_setMode(&MODULE_GPT120, IfxGpt12_Mode_timer);
-    IfxGpt12_T4_setTimerDirection(&MODULE_GPT120, IfxGpt12_TimerDirection_up);
-    IfxGpt12_T4_setTimerPrescaler(&MODULE_GPT120, IfxGpt12_TimerInputPrescaler_32);
-    IfxGpt12_T4_setTimerValue(&MODULE_GPT120, 0u);
-}
+//void init_gpt1(void)
+//{
+//    /* Initialize the GPT12 module */
+//    IfxGpt12_enableModule(&MODULE_GPT120); /* Enable the GPT12 module */
+//
+//    /* Initialize the Timer T3 (PWM) */
+//    IfxGpt12_setGpt1BlockPrescaler(&MODULE_GPT120, IfxGpt12_Gpt1BlockPrescaler_32); /* Set GPT1 block prescaler: 32 */
+//    IfxGpt12_T3_setMode(&MODULE_GPT120, IfxGpt12_Mode_timer);                       /* Set T3 to timer mode */
+//    IfxGpt12_T3_setTimerDirection(&MODULE_GPT120, IfxGpt12_TimerDirection_down);    /* Set T3 count direction(down) */
+//    IfxGpt12_T3_setTimerPrescaler(&MODULE_GPT120, IfxGpt12_TimerInputPrescaler_32); /* Set T3 input prescaler(2^5=32) */
+//
+//    /* Calculate dutyUpTime and dutyDownTime for reloading timer T3 */
+//    IfxGpt12_T3_setTimerValue(&MODULE_GPT120, 100);       /* Set timer T3 value */
+//
+//    /* Timer T2: reloads the value DutyDownTime in timer T3 */
+//    IfxGpt12_T2_setMode(&MODULE_GPT120, IfxGpt12_Mode_reload);                                  /* Set the timer T2 in reload mode */
+//    IfxGpt12_T2_setReloadInputMode(&MODULE_GPT120, IfxGpt12_ReloadInputMode_bothEdgesTxOTL);    /* Reload Input Mode : Rising/Falling Edge T3OTL */
+//    IfxGpt12_T2_setTimerValue(&MODULE_GPT120, 100);
+//
+//    /* Initialize the interrupt */
+//    volatile Ifx_SRC_SRCR *src = IfxGpt12_T3_getSrc(&MODULE_GPT120);                /* Get the interrupt address    */
+//    IfxSrc_init(src, ISR_PROVIDER_GPT12_TIMER, ISR_PRIORITY_GPT1T3_TIMER);          /* Initialize service request   */
+//    IfxSrc_enable(src);                                                             /* Enable GPT12 interrupt       */
+//
+//    /* Initialize the Timer T4 for Ultrasonic */
+//    IfxGpt12_T4_setMode(&MODULE_GPT120, IfxGpt12_Mode_timer);
+//    IfxGpt12_T4_setTimerDirection(&MODULE_GPT120, IfxGpt12_TimerDirection_up);
+//    IfxGpt12_T4_setTimerPrescaler(&MODULE_GPT120, IfxGpt12_TimerInputPrescaler_32);
+//    IfxGpt12_T4_setTimerValue(&MODULE_GPT120, 0u);
+//}
 
 void init_gpt2(void)
 {
@@ -141,15 +140,15 @@ void init_gpt2(void)
     IfxGpt12_T6_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
 }
 
-void runGpt12_T3()
-{
-    IfxGpt12_T3_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
-}
-
-void stopGpt12_T3()
-{
-    IfxGpt12_T3_run(&MODULE_GPT120, IfxGpt12_TimerRun_stop);
-}
+//void runGpt12_T3()
+//{
+//    IfxGpt12_T3_run(&MODULE_GPT120, IfxGpt12_TimerRun_start);
+//}
+//
+//void stopGpt12_T3()
+//{
+//    IfxGpt12_T3_run(&MODULE_GPT120, IfxGpt12_TimerRun_stop);
+//}
 
 void runGpt12_T6()
 {

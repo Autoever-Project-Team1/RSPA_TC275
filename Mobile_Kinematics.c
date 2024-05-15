@@ -80,7 +80,7 @@ Wall_Vel Wall_Follow(int Mode,double Tar_Dis,double Now_Dis,double Tar_Ang,doubl
         if(Wall_Follow_Distance_Control_Mode)
         {
             Wall_Follow_Distance_PID_Controller(Tar_Dis,Now_Dis);
-            W_V.Wall_Vx = 1;
+            W_V.Wall_Vx = 1.75;
 
                 W_V.Wall_Wz = Wall_Follow_Distance_PID.Win;
 

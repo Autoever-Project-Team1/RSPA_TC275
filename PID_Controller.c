@@ -56,14 +56,14 @@ void PID_Vel_Controller_Init(void)
 void PID_App_Controller_Init(void)
 {
     //
-    Wall_Follow_Distance_PID.Kp = 0.5;
-    Wall_Follow_Distance_PID.Ki = 0.3;
-    Wall_Follow_Distance_PID.Kd = 0.1;
+    Wall_Follow_Distance_PID.Kp = 1;//0.5
+    Wall_Follow_Distance_PID.Ki = 0.0;
+    Wall_Follow_Distance_PID.Kd = 0;//1
     Wall_Follow_Distance_PID.error_p_d = 0;
        //
-    Wall_Follow_Angle_PID.Kp = 1.8;
+    Wall_Follow_Angle_PID.Kp = 1;//0.5
     Wall_Follow_Angle_PID.Ki = 0.0;
-    Wall_Follow_Angle_PID.Kd = 0.5;
+    Wall_Follow_Angle_PID.Kd = 0;//1
     Wall_Follow_Angle_PID.error_p_d = 0;
 }
 

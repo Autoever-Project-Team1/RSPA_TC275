@@ -87,6 +87,8 @@ void core0_main(void)
     PID_Vel_Controller_Init();
     PID_Pos_Controller_Init();
     PID_App_Controller_Init();
+    Init_Buzzer();
+    Bluetooth_init();
 
 
     while(1)

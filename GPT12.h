@@ -11,11 +11,11 @@ void setcntDelay(unsigned int n);
 void IsrGpt120T3Handler_Motor(void);
 void IsrGpt2T6Handler(void);
 
-void init_gpt1(void);
+//void init_gpt1(void);
 void init_gpt2(void);
 
-void runGpt12_T3(void);
-void stopGpt12_T3(void);
+//void runGpt12_T3(void);
+//void stopGpt12_T3(void);
 void runGpt12_T6(void);
 void stopGpt12_T6(void);
 void runGpt12_T4(void);
