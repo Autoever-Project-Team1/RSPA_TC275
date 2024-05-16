@@ -35,6 +35,9 @@
 #include "PID_Controller.h"
 #include "ToF.h"
 
+//
+#include "lcd.h"
+//
 
 #include "GtmTomPwm.h"
 #include "AppScheduling.h"
@@ -59,6 +62,7 @@ void core0_main(void)
     IfxCpu_waitEvent(&g_cpuSyncEvent, 1);
 
 
+
     initLED();
     _init_uart3();
     _init_uart2();
@@ -74,7 +78,6 @@ void core0_main(void)
 
 
 
-    IfxCpu_enableInterrupts();
 
 
     //init_gpt2();
@@ -91,17 +94,25 @@ void core0_main(void)
     Bluetooth_init();
 
 
+//    I2C_Init();
+//    I2C_LCD_Init(0);
+
+
+    IfxCpu_enableInterrupts();
+
+    I2C_Init();
+    I2C_LCD_Init(0);
+
+    I2C_LCD_Clear(0);
+    I2C_LCD_SetCursor(0, 2, 0);
+    I2C_LCD_WriteString(0,"AUTOPARKING");
+    I2C_LCD_SetCursor(0, 5, 1);
+    I2C_LCD_WriteString(0,"SYSTEM");
+    I2C_LCD_Backlight(0);
+
+
     while(1)
     {
-
-//        c = _in_uart3();
-//        _out_uart3(c);
-//
-//        if(c == '1'){
-//            blinkLED();
-//            c = '0';
-//        }
         AppScheduling();
-
     }
 }

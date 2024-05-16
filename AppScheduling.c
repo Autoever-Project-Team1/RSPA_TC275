@@ -18,14 +18,25 @@
 #include "Bluetooth.h";
 #include "ObstacleDetection.h"
 
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "math.h"
 
 #include "GPT12.h"
+
+//#include "lcd.h"
 extern void setLeftMotorDuty(unsigned int duty);
 extern void setRightMotorDuty(unsigned int duty);
 
+int LCD_Mode_Parking_Go = 0;
+int LCD_Mode_Parking_Done = 0;
+int LCD_Mode_Exit_Go = 0;
+int LCD_Mode_Emergency_Stop = 0;
+int LCD_Mode_Parking_Back = 0;
+int LCD_Mode_Exit_Done = 0;
+int LCD_Mode_Emergency_Stop_F = 0;
 
 char str[100];
 uint32 data = 0;
@@ -118,7 +129,7 @@ int wall_step = 0; // 0 follow //1 : back //2 : front
 extern int Wall_Follow_Distance_Control_Mode;
 extern int Wall_Follow_Angle_Control_Mode;
 
-//
+char aaa = 0;
 
 //extern int Tof_dist_mm[10];
 
@@ -168,8 +179,8 @@ static void AppTask1ms(void)
     }
     //sprintf(str, "Dis:%d Ang:%lf Mode%d Mode%d\t\n",Tof_dist_mm[0],yaw,Wall_Follow_Distance_Control_Mode,Wall_Follow_Angle_Control_Mode);
     //sprintf(str, "ML %lf, MR %lf FrontDist%d BackDist%d Mode : %d,step: %d",App_Motor_Speed.Left_Motor_Speed,Right_Motor_Pos_Trajectory,Tof_dist_mm[2],Tof_dist_mm[3],Motion_mode_flag,step);
-    sprintf(str, "Yaw : %.2lf Avg_Dist : %.2lf wall step : %d\n",yaw,Avg_Dist,wall_step);
-
+    //sprintf(str, "App_Wall_Vel.Wall_Vx : %.2lf, g_Moveflag.parkingMove: %d\n",App_Wall_Vel.Wall_Vx,g_Moveflag.parkingMove);
+    sprintf(str, "%d %d %d %d", g_Moveflag.exitMove, g_Moveflag.exitStop, g_Moveflag.parkingMove, g_Moveflag.parkingStop);
     //100gap = gogo
 
 
@@ -229,6 +240,21 @@ static void AppTask10ms(void)
     {
         if(wall_step == 0 && !emergency_stop && g_Moveflag.parkingMove)
         {
+            if(LCD_Mode_Parking_Go ==0)
+            {
+            I2C_LCD_Clear(0);
+            I2C_LCD_SetCursor(0, 4, 0);
+            I2C_LCD_WriteString(0,"PARKING");
+            I2C_LCD_SetCursor(0, 7, 1);
+            I2C_LCD_WriteString(0,"GO");
+            I2C_LCD_Backlight(0);
+            LCD_Mode_Parking_Go =1;//parking go
+            }
+
+
+
+
+
         App_Wall_Vel = Wall_Follow(wall_mode_flag,150,Avg_Dist,0,yaw);
 
         App_Motor_Speed = Kinematics(App_Wall_Vel.Wall_Vx,App_Wall_Vel.Wall_Vy,-1.0*App_Wall_Vel.Wall_Wz);
@@ -239,6 +265,7 @@ static void AppTask10ms(void)
         }
         else if(wall_step ==1 && g_Moveflag.parkingMove)
         {
+
             App_Wall_Vel = Wall_Follow(wall_mode_flag,130,Avg_Dist,0,yaw);
 
 
@@ -249,7 +276,16 @@ static void AppTask10ms(void)
                 App_Motor_Speed.Right_Motor_Speed =0;
 
                 start_signature_sound();
-
+                if(LCD_Mode_Parking_Done == 0)
+                {
+                    I2C_LCD_Clear(0);
+                    I2C_LCD_SetCursor(0, 4, 0);
+                    I2C_LCD_WriteString(0,"PARKING");
+                    I2C_LCD_SetCursor(0, 6, 1);
+                    I2C_LCD_WriteString(0,"DONE");
+                    I2C_LCD_Backlight(0);
+                    LCD_Mode_Parking_Done =1;
+                }
                 wall_step =2;
 
             }
@@ -267,13 +303,37 @@ static void AppTask10ms(void)
         }
         else if(wall_step ==2 && g_Moveflag.exitMove)
         {
+
             if(emergency_stop)
             {
+                /////
                 App_Motor_Speed.Left_Motor_Speed = 0;
                 App_Motor_Speed.Right_Motor_Speed = 0;
+                if(LCD_Mode_Emergency_Stop ==0)
+                {
+                    I2C_LCD_Clear(0);
+                    I2C_LCD_SetCursor(0, 3, 0);
+                    I2C_LCD_WriteString(0,"EMERGENCY");
+                    I2C_LCD_SetCursor(0, 6, 1);
+                    I2C_LCD_WriteString(0,"STOP");
+                    I2C_LCD_Backlight(0);
+                    LCD_Mode_Emergency_Stop=1;
+                    LCD_Mode_Parking_Back = 0;
+                    LCD_Mode_Exit_Go = 0;
+                }
             }
             else
             {
+                if(LCD_Mode_Exit_Go==0)
+                {
+                    I2C_LCD_Clear(0);
+                    I2C_LCD_SetCursor(0, 6, 0);
+                    I2C_LCD_WriteString(0,"EXIT");
+                    I2C_LCD_SetCursor(0, 7, 1);
+                    I2C_LCD_WriteString(0,"GO");
+                    I2C_LCD_Backlight(0);
+                    LCD_Mode_Exit_Go =1;
+                }
                 App_Wall_Vel = Wall_Follow(wall_mode_flag,130,Avg_Dist,0,yaw);
                 App_Motor_Speed = Kinematics(App_Wall_Vel.Wall_Vx,App_Wall_Vel.Wall_Vy,-1.0*App_Wall_Vel.Wall_Wz);
 
@@ -334,6 +394,18 @@ static void AppTask10ms(void)
         }
         else if(step ==2) //Back_Motion
         {
+
+            if(LCD_Mode_Parking_Back ==0)
+            {
+                I2C_LCD_Clear(0);
+                I2C_LCD_SetCursor(0, 4, 0);
+                I2C_LCD_WriteString(0,"PARKING");
+                I2C_LCD_SetCursor(0, 6, 1);
+                I2C_LCD_WriteString(0,"BACK");
+                I2C_LCD_Backlight(0);
+                LCD_Mode_Parking_Back =1;//
+            }
+
             //RIGHT
             Right_Motor_Pos_Trajectory = MakeTrajectoryPos(-550,0,5,(double)stTestCnt.u32nuCnt1ms);
             //LEFT
@@ -373,6 +445,19 @@ static void AppTask10ms(void)
         }
         else if(step == 5 ){
             start_signature_sound();
+
+            if(LCD_Mode_Exit_Done ==0)
+            {
+                I2C_LCD_Clear(0);
+                I2C_LCD_SetCursor(0, 6, 0);
+                I2C_LCD_WriteString(0,"EXIT");
+                I2C_LCD_SetCursor(0, 6, 1);
+                I2C_LCD_WriteString(0,"DONE");
+                I2C_LCD_Backlight(0);
+                LCD_Mode_Exit_Done=1;
+            }
+
+
             step = 6;
         }
 
@@ -443,10 +528,26 @@ static void AppTask50ms(void)
     {
         frontDetection(Tof_dist_mm[2]);
 
-        if(Tof_dist_mm[2] < 100)
+        if(Tof_dist_mm[2] < 70 && !Tof_dist_mm[2] == 0)
         {
 
             emergency_stop = 1;
+
+
+            if(LCD_Mode_Emergency_Stop_F ==0)
+            {
+                I2C_LCD_Clear(0);
+                I2C_LCD_SetCursor(0, 3, 0);
+                I2C_LCD_WriteString(0,"EMERGENCY");
+                I2C_LCD_SetCursor(0, 6, 1);
+                I2C_LCD_WriteString(0,"STOP");
+                I2C_LCD_Backlight(0);
+                LCD_Mode_Emergency_Stop_F=1;
+                LCD_Mode_Parking_Go = 0;
+                LCD_Mode_Exit_Go = 0;
+
+            }
+
         }
         else
         {
@@ -482,8 +583,6 @@ static void AppTask500ms(void)
 {
     /*count*/
     stTestCnt.u32nuCnt500ms++;
-
-
 
 }
 
