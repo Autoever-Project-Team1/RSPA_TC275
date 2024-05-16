@@ -28,38 +28,36 @@ void readBlutooth(void){
     int res;
     res = _nonBlock_poll_uart0(&c);
 
+
+    //Press Button - One time
     if(res){
         if(g_firstBluConnect == 0){
             if(c == 'p' || c == 'P' || c == 'e' || c == 'E'){
-                start_signature_sound();
+                Start_Signature_Sound();
                 g_firstBluConnect = 1;
             }
         }
-
         if(c == 'p'){
             g_Moveflag.parkingStop = 1;
             g_Moveflag.parkingMove = 0;
-            //bef_p_state = c;
         }
         else if(c == 'P'){
             g_Moveflag.parkingStop = 0;
             g_Moveflag.parkingMove = 1;
-            //bef_p_state = c;
         }
         else if(c == 'e'){
             g_Moveflag.exitStop = 1;
             g_Moveflag.exitMove = 0;
-            //bef_e_state = c;
         }
         else if(c == 'E'){
             g_Moveflag.exitStop = 0;
             g_Moveflag.exitMove = 1;
-            //bef_e_state = c;
         }
 
-        //꾹 누름 확인?
+        //Press Button -ing
+        //Comparing before and after
         if(g_Detectionfront.Stop || g_DetectionBack.Stop){
-            //bef_p_state == c bef_e_state == c
+
             if(c == 'p' || c == 'P'){
                 g_Moveflag.parkingStop = 1;
                 g_Moveflag.parkingMove = 0;
@@ -69,7 +67,6 @@ void readBlutooth(void){
                 g_Moveflag.exitMove = 0;
             }
         }
-
         if(c == 'p' || c == 'P'){
             bef_p_state = c;
         }

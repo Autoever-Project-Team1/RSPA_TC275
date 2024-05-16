@@ -29,18 +29,17 @@ App_LPF_Encoder Right_LPF_Encoder;
 /*********************************************************************************************************************/
 void Encoder_Init(void)
 {
-    //LEFT
+    //Left&Right Encoder Pin Init
     IfxPort_setPinModeInput(A, IfxPort_InputMode_pullUp);
     IfxPort_setPinModeInput(B, IfxPort_InputMode_pullUp);
-    //RIGHT
+
     IfxPort_setPinModeInput(A2, IfxPort_InputMode_pullUp);
     IfxPort_setPinModeInput(B2, IfxPort_InputMode_pullUp);
-
 }
 
 void readEncoderTick(void)
 {
-    /*****A,B******/
+    //Left Encoder A,B Signal
     Left_Encoder.A_data = IfxPort_getPinState(A);
     Left_Encoder.B_data = IfxPort_getPinState(B);
     Left_Encoder.AB_data = (Left_Encoder.A_data << 1) | Left_Encoder.B_data;
@@ -81,7 +80,7 @@ void readEncoderTick(void)
     Left_Encoder.AB_bef = Left_Encoder.AB_data;
 
 
-    /*****A2,B2******/
+    //Right Encoder A,B Signal
 
     Right_Encoder.A_data = IfxPort_getPinState(A2);
     Right_Encoder.B_data = IfxPort_getPinState(B2);
@@ -129,8 +128,8 @@ void readEncoderTick(void)
 void Conv_rad_per_sec(void)
 {
 
-    /*****A,B******/
-
+    //Left Encoder rad/sec
+    //Left Encoder deg
 
     Left_Encoder.diffCnt = Left_Encoder.AB_Cnt - Left_Encoder.AB_Cnt_bef;
 
@@ -142,10 +141,9 @@ void Conv_rad_per_sec(void)
     Left_LPF_Encoder.LPF_rad_per_sec_bef = Left_LPF_Encoder.LPF_rad_per_sec;
 
     Left_LPF_Encoder.LPF_Deg += Left_LPF_Encoder.LPF_rad_per_sec * SAMPLETIME *360 / (2*PI);
-    //if(g_LPF_Encoder.LPF_Deg>360)g_LPF_Encoder.LPF_Deg = 0;
 
-
-    /*******A2,B2******/
+    //Right Encoder rad/sec
+    //Right Encoder deg
 
     Right_Encoder.diffCnt = Right_Encoder.AB_Cnt - Right_Encoder.AB_Cnt_bef;
 
@@ -157,22 +155,13 @@ void Conv_rad_per_sec(void)
     Right_LPF_Encoder.LPF_rad_per_sec_bef = Right_LPF_Encoder.LPF_rad_per_sec;
 
     Right_LPF_Encoder.LPF_Deg += Right_LPF_Encoder.LPF_rad_per_sec * SAMPLETIME *360 / (2*PI);
-    //if(g_LPF_Encoder.LPF_Deg>360)g_LPF_Encoder.LPF_Deg = 0;
-
-
-
-
-
-
 
 }
 
 double LPF(double previous_output, double input_signal, double cutoff_frequency, double Ts)
 {
-    //omega*2
+    //LowPassFilter
     double LPF_Coef = cutoff_frequency * Ts;
-
-
     double output = LPF_Coef * input_signal + (1 - LPF_Coef) * previous_output;
     return output;
 }

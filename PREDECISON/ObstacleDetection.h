@@ -22,6 +22,6 @@ extern Detectionflag g_Detectionfront;
 extern Detectionflag g_DetectionBack;
 
 
-void frontDetection(int tof_data);
+void FrontDetection(int tof_data);
 void BackDetection(int tof_data);
 #endif /* OBSTACLEDETECTION_H_ */

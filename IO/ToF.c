@@ -37,14 +37,14 @@ void asclin2RxISR(void)
     rxBuf[rxBufIdx] = c;
     ++rxBufIdx;
 
-    /* 버퍼가 꽉 차면, buf_tof에 복사 */
+    /* When the buffer is full, copy to buff_tof */
     if (rxBufIdx == TOF_length) {
         memcpy(gBuf_tof, rxBuf, TOF_length);
         rxBufIdx = 0;
     }
 }
 
-/* 수신 데이터가 정상이면 1, 그렇지 않으면 0 반환 */
+/* Returns 1 if received data is normal, 0 otherwise */
 static int verifyCheckSum (unsigned char data[])
 {
     unsigned char checksum = 0;
@@ -62,7 +62,7 @@ static int verifyCheckSum (unsigned char data[])
     }
 }
 
-/* 유효 거리인 경우 1 반환, 그렇지 않으면 0 반환 */
+/* 1 return if valid distance, 0 return otherwise */
 static int checkTofStrength (unsigned char data[])
 {
     int TOF_distance = data[8] | (data[9] << 8) | (data[10] << 16);
@@ -134,7 +134,7 @@ double calculateYawAngle(int tof1, int tof2) {
     double distance_difference = (double)(tof1 - tof2);
     double scaled_distance_diff = TOF_DISTDIFF * (distance_difference / (fabs(distance_difference) + TOF_DISTDIFF));
 
-    // arcsin(y/x) 怨꾩궛?섏뿬 ?쇰뵒?덉쑝濡?諛섑솚
+    // arcsin(y/x)
     double yaw_angle_radians = asin(scaled_distance_diff / TOF_DISTDIFF);
     yaw_angle_radians = yaw_angle_radians /PI * 180.0;
     return yaw_angle_radians;

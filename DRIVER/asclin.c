@@ -6,8 +6,6 @@
 #include "asclin.h"
 #include "Ifx_Console.h"
 
-
-
 #define ASC_TX_BUFFER_SIZE      256
 #define ASC_RX_BUFFER_SIZE      256
 #define ASC_BAUDRATE            115200
@@ -195,92 +193,6 @@ int _poll_uart2(unsigned char *chr)
     return res;
 }
 
-
-//
-
-/*
-//uart2..? tof??
-IFX_INTERRUPT(asclin1TxISR, 0, IFX_PRIORITY_ASCLIN_TOF1_TX);
-void asclin1TxISR(void)
-{
-    IfxAsclin_Asc_isrTransmit(&g_ascHandle1);
-}
-
-IFX_INTERRUPT(asclin1ErrISR, 0, IFX_PRIORITY_ASCLIN_TOF1_ER);
-void asclin1ErrISR(void)
-{
-    while(1);
-}
-
-void _init_uart1(void)
-{
-    IfxAsclin_Asc_Config ascConf;
-    IfxAsclin_Asc_initModuleConfig(&ascConf, &MODULE_ASCLIN1);
-
-    ascConf.baudrate.baudrate = TOF_BAUDRATE;
-    ascConf.baudrate.oversampling = IfxAsclin_OversamplingFactor_16;
-
-    ascConf.bitTiming.medianFilter = IfxAsclin_SamplesPerBit_three;
-    ascConf.bitTiming.samplePointPosition = IfxAsclin_SamplePointPosition_8;
-
-    ascConf.interrupt.txPriority = IFX_PRIORITY_ASCLIN_TOF1_TX;
-    ascConf.interrupt.rxPriority = IFX_PRIORITY_ASCLIN_TOF1_RX;
-    ascConf.interrupt.erPriority = IFX_PRIORITY_ASCLIN_TOF1_ER;
-
-    const IfxAsclin_Asc_Pins pins = {
-            .cts        = NULL_PTR,
-            .ctsMode    = IfxPort_InputMode_pullUp,
-            .rx         = &IfxAsclin1_RXA_P15_1_IN,
-            .rxMode     = IfxPort_InputMode_pullUp,
-            .rts        = NULL_PTR,
-            .tx         = &IfxAsclin1_TX_P15_0_OUT,
-            .txMode     = IfxPort_OutputMode_pushPull,
-            .pinDriver  = IfxPort_PadDriver_cmosAutomotiveSpeed1
-    };
-    ascConf.pins = &pins;
-
-    ascConf.txBuffer = g_uartTxBuffer_1;
-    ascConf.txBufferSize = ASC_TX_BUFFER_SIZE;
-    ascConf.rxBuffer = g_uartRxBuffer_1;
-    ascConf.rxBufferSize = ASC_RX_BUFFER_SIZE;
-
-    IfxAsclin_Asc_initModule(&g_ascHandle1, &ascConf);
-}
-
-void _out_uart1(const unsigned char chr)
-{
-    IfxAsclin_Asc_blockingWrite(&g_ascHandle1, chr);
-}
-
-unsigned char _in_uart1(void)
-{
-    unsigned char ch;
-
-    while (_poll_uart1(&ch) == 0);
-
-    return ch;
-}
-
-int _poll_uart1(unsigned char *chr)
-{
-    unsigned char ch;
-    Ifx_SizeT count = 0;
-    int res = 0;
-
-    count = IfxAsclin_getRxFifoFillLevel(g_ascHandle1.asclin);
-    if(count >= 1)
-    {
-        IfxAsclin_read8(g_ascHandle1.asclin, &ch, 1);
-        *chr = ch;
-        res = TRUE;
-    }
-    else
-        res = FALSE;
-    return res;
-}
-*/
-
-//UART
 IFX_INTERRUPT(asclin0TxISR, 0, ISR_PRIORITY_ASCLIN_BLUETOOTH_TX);
 void asclin0TxISR(void)
 {

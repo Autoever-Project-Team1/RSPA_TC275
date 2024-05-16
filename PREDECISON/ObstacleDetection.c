@@ -11,7 +11,8 @@ Detectionflag g_DetectionBack;
 char stopFlag_f = 0;
 char stopFlag_b = 0;
 
-void frontDetection(int tof_data){
+void FrontDetection(int tof_data)//Create distance-specific sound
+{
 
     if(tof_data < MIN_DETECT_MM_F){
         setBeepCycle(1);
@@ -56,7 +57,8 @@ void frontDetection(int tof_data){
 }
 
 
-void BackDetection(int tof_data){
+void BackDetection(int tof_data)//Create distance-specific sound
+{
 
     if(tof_data < MIN_DETECT_MM_B){
         setBeepCycle(1);

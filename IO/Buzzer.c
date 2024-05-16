@@ -73,7 +73,7 @@ void setToneCycle(int cycle)
     toneOnOff = FREQUENCY / cycle;
 }
 
-void start_signature_sound(void){
+void Start_Signature_Sound(void){
     beepCnt = 0;
     SongMode = 1;
 }
