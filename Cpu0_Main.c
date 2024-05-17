@@ -1,3 +1,4 @@
+
 /*ETC*/
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
@@ -26,11 +27,11 @@
 /*-------------------------------------------------Global variables--------------------------------------------------*/
 /*********************************************************************************************************************/
 
+
 IfxCpu_syncEvent g_cpuSyncEvent = 0;
 
 void core0_main(void)
 {
-    
     /* !!WATCHDOG0 AND SAFETY WATCHDOG ARE DISABLED HERE!!
      * Enable the watchdogs and service them periodically if it is required
      */
